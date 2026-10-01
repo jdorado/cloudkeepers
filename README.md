@@ -18,8 +18,8 @@ yarn install --frozen-lockfile
 yarn dev
 ```
 
-Open `http://127.0.0.1:5193`. For an iPad on the same trusted local network,
-`yarn dev:ipad` listens on the Mac's network address at port 5193. Use that address
+Open `http://127.0.0.1:5191`. For an iPad on the same trusted local network,
+`yarn dev:ipad` listens on the Mac's network address at port 5191. Use that address
 in Safari. The default command listens only on this computer.
 
 ```sh
@@ -174,6 +174,6 @@ save** explicitly imports it. Existing localhost saves can be downloaded and
 restored on the deployed site. Signing out returns to the guest library.
 
 Clerk handles adult identity; Mongo stores nicknames, selected tracks, practice
-history and progress. Use aliases rather than full names. The pilot has one parent
+history and progress. Use aliases rather than full names. Cloudkeepers has one parent
 per household and bounded history, with no AI processing or co-guardian invitations.
 See [PLATFORM.md](PLATFORM.md) for operator setup and current limitations.

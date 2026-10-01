@@ -1,4 +1,4 @@
-# Cloudkeepers pilot
+# Cloudkeepers
 
 Standalone public maths game. Work on main; preserve unrelated changes.
 Vite/Three.js owns play; Vercel Node API owns verified identity and Mongo saves.

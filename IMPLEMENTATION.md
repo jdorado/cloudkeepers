@@ -1,4 +1,4 @@
-# Cloudkeepers cloud pilot
+# Cloudkeepers cloud saves
 
 Objective: publish a generic open-source game with parent login and cross-device resume.
 Constraints: preserve local saves; publish no private history; one small Vercel app/API; Clerk + Mongo; no agent runtime.

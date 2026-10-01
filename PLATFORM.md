@@ -1,6 +1,6 @@
-# Cloudkeepers cloud pilot
+# Cloudkeepers cloud saves
 
-The pilot uses a public MIT game, one Vercel project for Vite assets and Node API,
+Cloudkeepers uses a public MIT game, one Vercel project for Vite assets and Node API,
 Clerk parent login, and MongoDB game saves. The game also runs locally without
 accounts. Clerk is a managed dependency; the game/API are independently deployable.
 
@@ -8,7 +8,7 @@ accounts. Clerk is a managed dependency; the game/API are independently deployab
 
 - Clerk verifies the adult. Children choose editable nicknames; no child email.
 - The API derives the account from a verified session. A request cannot select
-  another family. One parent account is one household in this pilot; no invitations.
+  another family. One parent account is one household ; no invitations.
 - Mongo holds one atomic document per `(game ID, Clerk user ID)`, containing all
   player/year books, pending questions, hints, drafts, islands and bounded history.
 - The renderer and learning reducer keep their existing deterministic rules.
@@ -26,7 +26,7 @@ Writes include an expected revision and stable operation UUID. The server
 atomically accepts one revision; concurrent or stale writes return a conflict.
 A lost response retries the identical persisted request. The parent can choose
 between the latest online save and the retained device branch, downloading a
-backup first. No silent last-write-wins overwrite. The pilot syncs snapshots;
+backup first. No silent last-write-wins overwrite. Cloudkeepers syncs snapshots;
 the latest 500 events per player/year are included, not a permanent event archive.
 
 Online saves are debounced; visible status distinguishes online, device-only,

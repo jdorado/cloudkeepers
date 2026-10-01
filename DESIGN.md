@@ -67,4 +67,4 @@ menus, hidden tabs and inactivity after 90 seconds. Timing never affects stars o
 the current adaptive band. Historical timing is not reconstructed.
 
 Private learner observations stay out of game source and published content.
-Parent account isolation, revision checks and offline retry are implemented for the cloud pilot. Co-guardian sharing, an event archive and optional agent-authored packs remain future work.
+Parent account isolation, revision checks and offline retry are implemented for the cloud saves. Co-guardian sharing, an event archive and optional agent-authored packs remain future work.
