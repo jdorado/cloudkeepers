@@ -176,6 +176,12 @@ library and never uploads guest progress automatically. **Use this device’s gu
 save** explicitly imports it. Existing localhost saves can be downloaded and
 restored on the deployed site. Signing out returns to the guest library.
 
+Cloud save verification covers 22 focused checks plus a real development-account
+browser flow: a separate browser recovered the exact question and unfinished
+answer, and concurrent edits prompted a save choice. Production DNS, HTTPS,
+email configuration, live keys and the parent login screen are verified.
+A parent completes their own email verification on first use.
+
 Clerk handles adult identity; Mongo stores nicknames, selected tracks, practice
 history and progress. Use aliases rather than full names. Cloudkeepers has one parent
 per household and bounded history, with no AI processing or co-guardian invitations.
