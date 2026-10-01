@@ -77,6 +77,7 @@ export async function setupCloud({ apply, guest, status, activate }) {
   let config;
   try { const response = await fetch('/api/config'); if (!response.ok) return null; config = await response.json(); } catch { return null; }
   if (!config.cloudEnabled) return null;
+  $('pilot-notice').hidden = !config.pilotMode;
   $('account-controls').hidden = false; $('account-status').textContent = 'Connecting parent login…';
   try {
     const domain = atob(config.publishableKey.split('_')[2]).slice(0, -1);

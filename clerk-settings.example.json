@@ -1,0 +1,18 @@
+{
+  "auth_email": {
+    "used_for_sign_up": true,
+    "required_for_sign_up": true,
+    "verify_at_sign_up": true,
+    "used_for_sign_in": true,
+    "verification_strategies": [
+      "email_code"
+    ],
+    "sign_in_strategies": [
+      "email_code"
+    ]
+  },
+  "auth_password": {
+    "enabled": false,
+    "required": false
+  }
+}

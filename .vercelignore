@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+.clerk
+.clerk.json
+cloudkeepers-save*.json
+
+.clerk*.json

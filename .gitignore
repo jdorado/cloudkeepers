@@ -10,3 +10,5 @@ cloudkeepers-save*.json
 
 .clerk/
 .clerk.json
+
+.clerk*.json

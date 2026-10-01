@@ -38,8 +38,8 @@ and database errors never create a shared anonymous cloud account.
 1. Fork this repository. Run `yarn install --frozen-lockfile`, `yarn test`, `yarn build`.
 2. Import the repository into Vercel with the Vite preset. The root `api/` directory
    deploys alongside `dist/`; main is the production branch.
-3. Create your own Clerk application and configure parent sign-in. Use a production
-   instance on a custom domain for sharing. Development keys are for pilot testing.
+3. Create your own Clerk application and configure parent sign-in. Start on Vercel’s generated domain with development keys for pilot testing.
+   Clerk production requires an owned domain; do not add DNS during initial setup.
 4. Provision a Mongo database and an app-scoped credential. Configure only server
    environment variables: `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `MONGODB_URI`,
    `MONGODB_DATABASE`, and exact comma-separated `APP_ORIGINS` including scheme.
@@ -59,7 +59,9 @@ and readiness. Private API responses use no-store and authenticated ownership.
 Reuse the pattern before extracting a framework. New apps keep their own public
 repository and Vercel project, use the shared Clerk application when they should
 share accounts, and keep app data isolated by stable app ID and verified user ID.
-Subdomains on one parent domain simplify shared sessions. Unrelated domains need
+Start each pilot on its generated Vercel address. Clerk development sessions are
+not the production shared-login solution. A later owned parent domain simplifies
+shared production sessions. Unrelated domains need
 Clerk satellite configuration and a paid production plan.
 
 Add another game only when needed; reuse scene assets and the save boundary.

@@ -788,3 +788,5 @@
 .account-controls p, .sync-conflict p { font-size: 12px; line-height: 1.4; margin: 8px 0 0; }
 .sync-conflict { border-color: #d68c48; }
 .primary:disabled { opacity: .6; }
+
+.pilot-notice { max-width: 480px; font-size: 12px !important; margin: 8px 0 !important; color: #7b573b; }
