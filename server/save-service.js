@@ -13,7 +13,7 @@ export function normalizeSave(raw) {
 export function saveIdentity(userId) { return `${GAME_ID}:${userId}`; }
 export function publicSave(doc) { return doc ? { revision: doc.revision, library: doc.library, updatedAt: doc.updatedAt } : { revision: 0, library: null, updatedAt: null }; }
 
-// One account/game document is the pilot's household. Mongo updates are atomic.
+// One account/game document is one household. Mongo updates are atomic.
 // Identity always comes from the verified session, never from the request body.
 export async function readAccount(collection, userId) {
   return publicSave(await collection.findOne({ _id: saveIdentity(userId) }));

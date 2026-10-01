@@ -8,7 +8,7 @@ accounts. Clerk is a managed dependency; the game/API are independently deployab
 
 - Clerk verifies the adult. Children choose editable nicknames; no child email.
 - The API derives the account from a verified session. A request cannot select
-  another family. One parent account is one household ; no invitations.
+  another family. One parent account is one household; no invitations.
 - Mongo holds one atomic document per `(game ID, Clerk user ID)`, containing all
   player/year books, pending questions, hints, drafts, islands and bounded history.
 - The renderer and learning reducer keep their existing deterministic rules.
@@ -38,8 +38,9 @@ and database errors never create a shared anonymous cloud account.
 1. Fork this repository. Run `yarn install --frozen-lockfile`, `yarn test`, `yarn build`.
 2. Import the repository into Vercel with the Vite preset. The root `api/` directory
    deploys alongside `dist/`; main is the production branch.
-3. Create your own Clerk application and configure parent sign-in. Start on Vercel’s generated domain with development keys for pilot testing.
-   Clerk production requires an owned domain; do not add DNS during initial setup.
+3. Create your own Clerk application and configure parent sign-in. Use development
+   keys on localhost or Vercel preview addresses. For a public release, use production
+   keys and an owned domain; a subdomain of an existing Vercel-managed domain works.
 4. Provision a Mongo database and an app-scoped credential. Configure only server
    environment variables: `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `MONGODB_URI`,
    `MONGODB_DATABASE`, and exact comma-separated `APP_ORIGINS` including scheme.
@@ -59,10 +60,10 @@ and readiness. Private API responses use no-store and authenticated ownership.
 Reuse the pattern before extracting a framework. New apps keep their own public
 repository and Vercel project, use the shared Clerk application when they should
 share accounts, and keep app data isolated by stable app ID and verified user ID.
-Start each pilot on its generated Vercel address. Clerk development sessions are
-not the production shared-login solution. A later owned parent domain simplifies
-shared production sessions. Unrelated domains need
-Clerk satellite configuration and a paid production plan.
+Give each released app a subdomain of the same owned parent domain. Vercel
+serves each app from its own project and manages DNS and TLS. Configure Clerk
+on the parent domain so sessions work across subdomains, and allow only each
+app’s exact origin in its API. Unrelated domains need Clerk satellite configuration.
 
 Add another game only when needed; reuse scene assets and the save boundary.
 Co-guardian access, data deletion UI, server-verified learning actions, longer
