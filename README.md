@@ -1,5 +1,8 @@
 # Cloudkeepers
 
+Play: **https://cloudkeepers.eztudy.space** · [Public source](https://github.com/jdorado/cloudkeepers)
+
+
 A browser maths adventure with twelve numbered islands and creature rescues.
 Each island is one learning level, rendered using three reusable procedural
 backdrops. Create/edit a player nickname, choose UK Year 1, 2 or 3, and practise

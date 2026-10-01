@@ -4,6 +4,18 @@ Cloudkeepers uses a public MIT game, one Vercel project for Vite assets and Node
 Clerk parent login, and MongoDB game saves. The game also runs locally without
 accounts. Clerk is a managed dependency; the game/API are independently deployable.
 
+## Hosted app
+
+- Public source: https://github.com/jdorado/cloudkeepers (MIT).
+- Vercel project: `cloudkeepers`; game URL: https://cloudkeepers.eztudy.space.
+- Shared Clerk application: Learning Games, production domain `eztudy.space`.
+  Parent login uses email verification codes; children use nicknames.
+- Dedicated MongoDB Atlas integration: learning-games, database `learning_games`.
+- Other apps can use `<app>.eztudy.space`, their own Vercel project and app ID,
+  and this Clerk identity service. Add each exact app origin to its API config.
+- Source checkout: `/Users/juancamilo/dev/data_mirrors/ezfamily_data/work/projects/cloudkeepers`.
+  The enclosing private mirror ignores this independent public checkout.
+
 ## Boundaries
 
 - Clerk verifies the adult. Children choose editable nicknames; no child email.
