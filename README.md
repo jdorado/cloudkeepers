@@ -136,11 +136,13 @@ celebration are procedural geometry. Maths diagrams are CSS and inline SVG.
 Sound is synthesized locally. No downloaded images, external fonts, or network
 asset requests are needed. Three.js uses its MIT license.
 
-Fifteen focused tests cover 21,600 generated questions across all topics,
+Twenty-two focused tests cover 21,600 generated questions across all topics,
 years and bands, arithmetic/visual consistency, unique choices, recent-fact
 avoidance, adaptation, assisted/retried answers, mastery, sequential island
 unlocks, old-save migration, generic profile/year isolation, pending question IDs,
-draft/time restoration, bounded telemetry and backup recovery. All year/band
+draft/time restoration, bounded telemetry and backup recovery. Cloud checks also cover account isolation, exact pending
+question persistence, concurrent first writes, duplicate delivery, stale revisions,
+lost acknowledgements and unauthenticated API rejection. All year/band
 combinations can complete all twelve islands.
 
 Browser proof includes migration of the previous named save without changing its
