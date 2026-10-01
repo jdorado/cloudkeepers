@@ -1,0 +1,29 @@
+{
+  "name": "cloudkeepers",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "dev": "vite --host 127.0.0.1 --port 5193 --strictPort",
+    "dev:ipad": "vite --host 0.0.0.0 --port 5193 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5193 --strictPort"
+  },
+  "dependencies": {
+    "@clerk/backend": "^3.21.1",
+    "mongodb": "^7.7.0",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "vite": "8.3.1"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jdorado/cloudkeepers.git"
+  }
+}

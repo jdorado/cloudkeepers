@@ -1,0 +1,32 @@
+export const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const dots = (n, kind = 'cargo') => Array.from({ length: n }, () => `<span class="token ${kind}" aria-hidden="true"></span>`).join('');
+const countables = (n, removed = 0) => Array.from({ length: n }, (_, i) => `<button type="button" class="count-object${i >= n - removed ? ' removed' : ''}" data-count="${i}" aria-label="Count crystal ${i + 1}" aria-pressed="false"><span class="token crystal" aria-hidden="true"></span></button>`).join('');
+
+export function questionVisual(q) {
+  const v = q.visual, e = escapeHtml;
+  // The missing operand is the answer: neither a column nor crossed objects may show it.
+  if (['add', 'subtract'].includes(q.family) && q.expression.includes('?')) return '';
+  if (v.type === 'count' || v.type === 'takeAway') return `<div class="math-visual counting"><div class="objects">${countables(v.type === 'count' ? v.a + v.b : v.a, v.type === 'takeAway' ? v.b : 0)}</div><small id="count-caption">${v.type === 'takeAway' ? 'Crossed crystals have been used.' : 'Tap the crystals to keep track as you count.'}</small></div>`;
+  if (v.type === 'place') return `<div class="math-visual place-blocks">${[100, 10, 1].filter(unit => unit !== 100 || v.number >= 100).map(unit => `<div><div class="base-blocks">${Array.from({ length: Math.floor(v.number / unit) % 10 }, () => `<span class="base-${unit}"></span>`).join('') || '<span class="zero-block">0</span>'}</div><small>${unit === 100 ? 'Hundreds' : unit === 10 ? 'Tens' : 'Ones'}</small></div>`).join('')}</div>`;
+  if (v.type === 'numberCards') return `<div class="math-visual number-cards">${v.numbers.map(n => `<span>${e(n)}</span>`).join('')}</div>`;
+  if (v.type === 'column') { const digits = Math.max(String(v.a).length, String(v.b).length); return `<div class="math-visual column-visual"><small>Line up the place values</small><div class="column-head">${digits === 3 ? 'H' : ''} T O</div><div class="column-number">${e(v.a)}</div><div class="column-number">${e(v.op)} ${e(v.b)}</div><div class="column-rule"></div></div>`; }
+  if (v.type === 'array') return `<div class="math-visual"><div class="berry-array">${Array.from({ length: v.groups }, () => `<div>${dots(v.each)}</div>`).join('')}</div><small>${q.expression.startsWith('?') ? 'Equal groups' : `${v.groups} equal groups`} · ${v.each} in each group</small></div>`;
+  if (v.type === 'sharing') return `<div class="math-visual"><div class="sharing-total">${e(v.total)} moonberries</div><div class="sharing-baskets">${Array.from({ length: v.groups }, () => '<span>♡<b>?</b></span>').join('')}</div><small>Share equally between ${e(v.groups)} friends.</small></div>`;
+  if (v.type === 'partition') { if (q.expression.startsWith('?')) return `<div class="math-visual measure"><b>${v.groups * v.each} moonberries</b><small>Each group has ${v.each}. How many groups?</small></div>`; const tens = Math.floor(v.groups / 10) * 10, ones = v.groups % 10; return `<div class="math-visual partition"><div><b>${tens}</b><span>groups of ${v.each}</span></div><strong>+</strong><div><b>${ones}</b><span>groups of ${v.each}</span></div></div>`; }
+  if (v.type === 'fraction') return `<div class="math-visual"><div class="fraction-bar">${Array.from({ length: v.denominator }, (_, i) => `<span class="${i < v.numerator ? 'filled' : ''}"></span>`).join('')}</div><small>${v.denominator} equal parts${v.quantity ? ` · ${v.quantity} moonberries in the whole group` : ' of one whole'}</small></div>`;
+  if (v.type === 'coins') return `<div class="math-visual"><div class="coins">${v.coins.map(n => `<span>${n}<small>pence</small></span>`).join('')}</div>${v.paid ? `<small>You pay ${v.paid}p.</small>` : ''}</div>`;
+  if (v.type === 'ribbon') return `<div class="math-visual ribbons"><span style="flex:${v.a}">${v.a} cm</span><span style="flex:${v.b}">${v.b} cm</span></div>`;
+  if (v.type === 'rectangle') return `<div class="math-visual"><div class="garden-rectangle"><span>${v.width} cm</span><b>${v.height} cm</b></div></div>`;
+  if (v.type === 'measure') return `<div class="math-visual measure"><span>↔</span><b>${v.whole} ${e(v.unit)}${v.rest ? ` + ${v.rest} ${e(v.output)}` : ''}</b><small>Write in ${e(v.output)}</small></div>`;
+  if (v.type === 'clock') {
+    const polar = (angle, radius) => [100 + Math.sin(angle * Math.PI / 180) * radius, 100 - Math.cos(angle * Math.PI / 180) * radius];
+    const hand = (angle, radius, width, color) => { const [x, y] = polar(angle, radius); return `<line x1="100" y1="100" x2="${x}" y2="${y}" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`; };
+    return `<div class="math-visual clock-wrap"><svg viewBox="0 0 200 200" role="img" aria-label="Clock with hour and minute hands"><circle cx="100" cy="100" r="93" fill="#fff9e9" stroke="#9bb8ae" stroke-width="5"/>${Array.from({ length: 60 }, (_, i) => { const a = polar(i * 6, i % 5 ? 84 : 80), b = polar(i * 6, 88); return `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#98a99e" stroke-width="${i % 5 ? 1 : 2}"/>`; }).join('')}${Array.from({ length: 12 }, (_, i) => { const [x, y] = polar((i + 1) * 30, 69); return `<text x="${x}" y="${y}" dominant-baseline="middle" text-anchor="middle" fill="#496969" font-size="14">${i + 1}</text>`; }).join('')}${hand(v.hour * 30 + v.minutes / 2, 44, 6, '#516d6e')}${hand(v.minutes * 6, 63, 4, '#b47b50')}<circle cx="100" cy="100" r="5" fill="#516d6e"/></svg></div>`;
+  }
+  if (v.type === 'shape') {
+    const points = v.name === 'square' ? '45,35 155,35 155,145 45,145' : v.name === 'rectangle' ? '25,50 175,50 175,130 25,130' : Array.from({ length: v.sides }, (_, i) => { const a = i * Math.PI * 2 / v.sides - Math.PI / 2; return `${100 + Math.cos(a) * 68},${90 + Math.sin(a) * 68}`; }).join(' ');
+    return `<div class="math-visual shape-wrap"><svg viewBox="0 0 200 180" role="img" aria-label="A shape to study"><polygon points="${points}" fill="#dbe6cf" stroke="#73968d" stroke-width="4" stroke-linejoin="round"/></svg></div>`;
+  }
+  if (v.type === 'chart') return `<div class="math-visual chart"><small>Key: each ✦ represents ${v.scale} ${v.scale === 1 ? 'friend' : 'friends'}</small>${v.labels.map((name, i) => `<div class="chart-row"><b>${e(name)}</b><span>${Array.from({ length: v.units[i] }, () => '<i>✦</i>').join('')}</span></div>`).join('')}</div>`;
+  return '';
+}

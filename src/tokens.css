@@ -1,0 +1,10 @@
+.token.water{width:17px;height:21px;background:linear-gradient(110deg,#7aadb6 50%,#a8d1d5 51%);clip-path:polygon(50% 0,90% 45%,100% 70%,85% 92%,50% 100%,15% 92%,0 70%,10% 45%)}
+.count-object{display:flex;align-items:center;justify-content:center;width:32px;height:36px;background:transparent;border:0;border-radius:6px;padding:5px;flex-shrink:0;transition:background .2s}
+.count-object.counted{background:#cadfd0}
+.count-object.counted .token{transform:translateY(-3px);filter:brightness(1.1)}
+.joined .objects{gap:2px}
+@media(pointer:coarse),(max-width:1100px){.count-object{width:44px;height:44px}.joined .objects{gap:1px}}
+.marker-short{display:none}
+.number-line{gap:1px}
+.number-line span{min-width:10px}
+@media(max-width:700px){.marker-full{display:none}.marker-short{display:inline}}

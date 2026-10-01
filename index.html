@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#e9dfd6" />
+    <meta name="description" content="A little sky adventure. Explore floating islands, practise maths, and bring the Cloudkeepers home." />
+    <title>Cloudkeepers · A little sky adventure</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23e7b46e'/%3E%3Cpath d='M14 21 18 8 30 19 40 19 51 8 54 24 51 44 34 55 16 43Z' fill='%23cf643f'/%3E%3Cpath d='m20 31 14 19 15-19-15 7Z' fill='%23fff2d6'/%3E%3Ccircle cx='23' cy='28' r='3'/%3E%3Ccircle cx='45' cy='28' r='3'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div id="world" aria-label="Floating sky village"></div>
+    <div id="markers"></div>
+    <header class="topbar">
+      <button class="brand" id="home" aria-label="Cloudkeepers title screen"><span class="brand-mark">✦</span> CLOUDKEEPERS</button>
+      <div class="top-actions"><button id="sound" class="icon-button" aria-label="Turn sound on" aria-pressed="false">♫ <span>Sound off</span></button><button id="help" class="icon-button" aria-label="How to play">?</button></div>
+    </header>
+    <main>
+      <section id="opening" class="opening">
+        <div class="eyebrow"><span></span> A LITTLE SKY ADVENTURE</div>
+        <h1>Little steps.<br>Big <em>magic.</em></h1>
+        <p>A storm scattered our sky village.<br>One little fox can bring it back.</p>
+        <div id="account-controls" class="account-controls" hidden><small id="account-status" role="status"></small><div><button id="parent-login" class="text-button">Parent sign in · save online</button><button id="parent-logout" class="text-button" hidden>Sign out</button><button id="import-device" class="text-button" hidden>Use this device’s guest save</button><button id="sync-retry" class="text-button" hidden>Sync now</button></div><p>Parents sign in; children choose a nickname. Your family’s progress stays private.</p></div>
+        <div id="sync-conflict" class="sync-conflict" hidden><strong>Another device saved different progress.</strong><p>Download this device’s save before choosing which one to continue.</p><button id="use-online" class="text-button">Continue online save</button><button id="use-device" class="text-button">Keep this device’s save</button></div>
+        <div class="player-setup"><div class="player-choices" aria-label="Choose your Cloudkeeper"></div><div class="player-edit"><label for="player-name">Player nickname<input id="player-name" maxlength="30" autocomplete="off" /></label><button id="add-player" class="text-button">Add player</button></div><div class="setup-fields"><label for="school-year">Starting maths level<select id="school-year"><option value="1">UK Year 1</option><option value="2">UK Year 2</option><option value="3">UK Year 3</option></select></label><label for="start-band">First questions<select id="start-band"><option value="0">With support</option><option value="1" selected>Practice</option><option value="2">Challenge</option></select></label></div><small id="profile-note">Your own progress. Questions adapt as you practise.</small></div><button id="play" class="primary">Let’s play <span>↗</span></button>
+        <div class="save-tools"><span id="save-status" role="status">Progress saves on this device</span><button id="download-save" class="text-button">Download save</button><label class="text-button save-import" for="restore-save">Restore save<input id="restore-save" type="file" accept="application/json,.json" /></label></div><div class="opening-note">12 islands <i>·</i> 12 little friends <i>·</i> Your own pace</div>
+      </section>
+      <section id="hud" class="hud" hidden>
+        <div class="area-title"><span class="eyebrow" id="chapter">YOUR SKY JOURNEY</span><h2 id="area-name">The Garden Island</h2></div>
+        <div class="progress"><span class="progress-icon">✧</span><div><strong id="progress-count">0 / 12</strong><span>friends rescued</span></div><div class="progress-track"><i id="progress-fill"></i></div></div>
+        <nav class="island-nav" aria-label="Travel to an island"></nav><button id="levels" class="level-menu-button">Island map ↗</button>
+        <div class="companion"><div class="pip-icon">☁</div><div><span>PIP, YOUR CLOUD GUIDE</span><p id="guide">The crystal bridge needs a little magic.</p></div></div>
+        <button id="interact" class="interact" hidden><span id="interact-name">Explore</span><kbd>E</kbd></button>
+        <div class="controls-note">WASD / arrows to walk <i>·</i> E to help <i>·</i> Click to walk</div>
+        <div class="touch-pad" aria-label="Movement controls"><button data-dir="up" aria-label="Walk up">↑</button><button data-dir="left" aria-label="Walk left">←</button><button data-dir="down" aria-label="Walk down">↓</button><button data-dir="right" aria-label="Walk right">→</button></div>
+      </section>
+      <section id="ending" class="ending" hidden><span class="eyebrow">THE SKY IS HOME AGAIN</span><h1>You brought<br>back the <em>magic.</em></h1><p>Twelve friends. Twelve maths levels.<br>A whole village, restored by you.</p><div class="ending-badges"><span>✦ 12 levels mastered</span><span>♡ 12 happy friends</span></div><button id="replay" class="primary">Keep practising <span>↗</span></button><button id="explore" class="text-button">Stay and explore the village</button></section>
+    </main>
+    <div class="modal-backdrop" id="challenge" hidden><section class="puzzle" role="dialog" aria-modal="true" aria-labelledby="puzzle-title"></section></div>
+    <div class="modal-backdrop" id="help-modal" hidden><section class="help-card" role="dialog" aria-modal="true" aria-labelledby="help-title"><button class="close" id="close-help" aria-label="Close help">×</button><span class="eyebrow">A SMALL GUIDE</span><h2 id="help-title">Hello, Cloudkeeper.</h2><p>Walk with <b>WASD or the arrow keys</b>. On a touch screen, use the arrows or tap the grass.</p><p>Look for the little <b>✦ signs</b>. Walk over and press <b>E</b>, or tap a sign to help.</p><p>Each island is one maths level. Open the <b>Island map</b> to see all twelve. Collect six rescue stars to unlock the next island. Three successful answers restore its landmark. Use a <b>hint</b> or choose a gentler difficulty whenever you like.</p><p>Every player has separate progress for each school year. Edit a nickname or add a player on the title screen. Questions get harder after two independent answers and gentler after two missed questions. Mastered levels stay open for practice. Continue returns to your saved island and question. Guest saves stay in this browser. Parent sign in enables online saves when configured. Download a backup to keep or transfer them. There’s no timer.</p><button id="help-ok" class="primary">Let’s explore <span>↗</span></button></section></div>
+    <div class="modal-backdrop" id="levels-modal" hidden><section class="level-card" role="dialog" aria-modal="true" aria-labelledby="levels-title"></section></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <div id="storage-warning" class="storage-warning" role="status" hidden>Progress is not saving in this browser. Open the title screen to download a save.</div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
