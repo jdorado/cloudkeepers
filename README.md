@@ -163,6 +163,9 @@ the journey update; generator and all-island domain checks cover the update.
 Game source is licensed under [MIT](LICENSE). This repository has fresh history
 and generic defaults. Operator credentials and player exports do not belong in source.
 
+Cloudkeepers includes a web manifest, favicon and Apple touch icon. On a phone or
+tablet, use the browser's **Add to Home Screen** action to launch it with the fox icon.
+
 ## Parent login and online saves
 
 When cloud configuration is complete, **Sign in to save online** opens Clerk with **Continue with Google**. Each parent

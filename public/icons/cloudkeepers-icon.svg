@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Cloudkeepers fox</title>
+  <desc id="desc">A friendly orange fox resting on a cream cloud beneath a small star.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6d79a"/>
+      <stop offset="1" stop-color="#dda06c"/>
+    </linearGradient>
+    <linearGradient id="fox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#df794d"/>
+      <stop offset="1" stop-color="#bd4f39"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="url(#sky)"/>
+  <circle cx="176" cy="210" r="92" fill="#fff1cf" opacity=".32"/>
+  <circle cx="876" cy="800" r="132" fill="#955d71" opacity=".12"/>
+  <path d="m771 149 16 39 40 16-40 17-16 39-17-39-39-17 39-16Z" fill="#fff8e5"/>
+  <path d="M236 754c-42-4-74-40-74-83 0-46 37-84 83-84 9 0 18 2 26 4 22-66 85-114 159-114 66 0 125 39 151 98 17-10 36-15 57-15 60 0 109 47 112 107 5-1 11-2 17-2 51 0 93 41 93 92 0 52-42 93-93 93H252c-47 0-85-38-85-85 0-4 0-7 1-11Z" fill="#fff7e8"/>
+  <path d="M313 440 350 244l142 119c15-4 31-6 48-6 18 0 35 2 52 7l143-120 36 204c23 41 35 87 35 136 0 139-104 252-233 252S341 723 341 584c0-52 15-102 41-144Z" fill="url(#fox)"/>
+  <path d="m361 327 22 117 83-69Z" fill="#f4c08a"/>
+  <path d="m681 327-22 117-83-69Z" fill="#f4c08a"/>
+  <path d="M406 590c21 101 76 174 135 174 61 0 117-76 136-180-40 26-87 41-137 41-49 0-95-13-134-35Z" fill="#fff0d6"/>
+  <ellipse cx="454" cy="532" rx="22" ry="29" fill="#423e3d"/>
+  <ellipse cx="629" cy="532" rx="22" ry="29" fill="#423e3d"/>
+  <circle cx="448" cy="523" r="7" fill="#fff"/>
+  <circle cx="623" cy="523" r="7" fill="#fff"/>
+  <path d="M513 618c0-21 17-37 38-37s38 16 38 37c0 22-38 47-38 47s-38-25-38-47Z" fill="#423e3d"/>
+  <path d="M487 688c20 16 41 24 64 24 24 0 47-9 67-26" fill="none" stroke="#98503e" stroke-linecap="round" stroke-width="13"/>
+</svg>
