@@ -165,18 +165,17 @@ and generic defaults. Operator credentials and player exports do not belong in s
 
 ## Parent login and online saves
 
-When cloud configuration is complete, **Parent sign in** opens Clerk. Each parent
+When cloud configuration is complete, **Sign in to save online** opens Clerk. Each parent
 has a private game library with child nicknames and separate year tracks. The game
 shows **Saved online** after acknowledgement; otherwise the account cache keeps
-work on this device. **Sync now** retries an interrupted request. Another device’s
+work on this device. Interrupted requests retry automatically. Sign-out and backup controls are in **Options**. Another device’s
 newer save prompts a choice; download a backup before replacing either version.
 
 Guest play retains the existing device save. Signing in starts/resumes the account
-library and never uploads guest progress automatically. **Use this device’s guest
-save** explicitly imports it. Existing localhost saves can be downloaded and
+library and never uploads guest progress automatically. **Bring in progress from this device** in Options explicitly imports it. Existing localhost saves can be downloaded and
 restored on the deployed site. Signing out returns to the guest library.
 
-Cloud save verification covers 22 focused checks plus a real development-account
+Cloud save verification covers 23 focused checks plus a real development-account
 browser flow: a separate browser recovered the exact question and unfinished
 answer, and concurrent edits prompted a save choice. Production DNS, HTTPS,
 email configuration, live keys and the parent login screen are verified.

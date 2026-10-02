@@ -72,3 +72,27 @@ test('API rejects unauthenticated requests without touching the database', async
   delete process.env.CLERK_SECRET_KEY; await handler({ method: 'GET', headers: {} }, response); assert.equal(response.code, 503);
   for (const key of ['CLERK_SECRET_KEY','MONGODB_URI','APP_ORIGINS']) { if (old[key] === undefined) delete process.env[key]; else process.env[key] = old[key]; }
 });
+
+test('saving retries a lost acknowledgement automatically without a sync button', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const c = new Collection(), calls = []; let drop = true;
+  const sync = controller(storage(), async (method, body) => {
+    if (method === 'GET') return readAccount(c, 'a');
+    calls.push(structuredClone(body));
+    const result = await writeAccount(c, 'a', body);
+    if (drop) { drop = false; throw new Error('Response lost'); }
+    return result.body;
+  });
+  await sync.connect('a');
+  const library = createLibrary(); library.players['player-1'].name = 'Explorer';
+  sync.save(library);
+  t.mock.timers.tick(1500); await new Promise(setImmediate);
+  assert.ok(sync.state.pending);
+  t.mock.timers.tick(2000); await new Promise(setImmediate);
+  assert.equal(sync.state.pending, null);
+  assert.equal(sync.state.dirty, false);
+  assert.deepEqual(calls[0], calls[1]);
+  const remote = await readAccount(c, 'a');
+  assert.equal(remote.revision, 1);
+  assert.equal(remote.library.players['player-1'].name, 'Explorer');
+});

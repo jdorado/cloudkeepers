@@ -783,9 +783,13 @@
 .practice-log table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 10px; }
 .practice-log th, .practice-log td { padding: 5px; text-align: left; border-bottom: 1px solid #d4ddcb; }
 
-.account-controls, .sync-conflict { max-width: 480px; margin: 12px 0; padding: 12px; border: 1px solid #afc4b0; border-radius: 14px; background: #f6f4e9ed; }
-.account-controls div { display: flex; gap: 12px; flex-wrap: wrap; }
-.account-controls p, .sync-conflict p { font-size: 12px; line-height: 1.4; margin: 8px 0 0; }
-.sync-conflict { border-color: #d68c48; }
+#account-controls .text-button { margin: 0; }
+.save-tools #save-status { flex-basis: auto; }
+.save-tools details { position: relative; }
+.save-tools summary { cursor: pointer; padding: 4px 0; }
+.save-options { display: grid; gap: 8px; min-width: 190px; padding: 12px; margin-top: 5px; border: 1px solid #afc4b0; border-radius: 10px; background: #fffdf4; }
+.save-options .text-button { text-align: left; }
+.sync-conflict { max-width: 400px; margin: 12px 0; padding: 12px; border: 1px solid #d68c48; border-radius: 14px; background: #f6f4e9ed; }
+.sync-conflict p { font-size: 12px; line-height: 1.4; margin: 8px 0 0; }
 .primary:disabled { opacity: .6; }
 
