@@ -14,5 +14,5 @@ provision another database/password per game. Follow the workspace canonical
 `/Users/juancamilo/dev/specs/_game_browser-spec.md`; external self-deployers own
 their own provider setup.
 Keep family data, exports, operator secrets and private Git history out of source.
-Use yarn. Run focused domain checks and browser smoke before pushing/deploying.
+Use pnpm. Run focused domain checks and browser smoke before pushing/deploying.
 Local guest play must remain available without cloud credentials.

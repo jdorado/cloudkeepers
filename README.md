@@ -17,22 +17,22 @@ Optional parent login and online saves use Clerk, Vercel and MongoDB. See
 ## Run
 
 ```sh
-yarn install --frozen-lockfile
-yarn dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 Open `http://127.0.0.1:5191`. For an iPad on the same trusted local network,
-`yarn dev:ipad` listens on the Mac's network address at port 5191. Use that address
+`pnpm dev:ipad` listens on the Mac's network address at port 5191. Use that address
 in Safari. The default command listens only on this computer.
 
 ```sh
-yarn test
-yarn build
-yarn preview
+pnpm test
+pnpm build
+pnpm preview
 ```
 
 The static production game is in `dist/`. Vercel serves it alongside the `api/` functions.
-Stop the development server before using `yarn preview` on the same port.
+Stop the development server before using `pnpm preview` on the same port.
 
 ## Play and progress
 

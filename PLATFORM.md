@@ -59,7 +59,7 @@ permission boundary between game backends. The workspace canonical contract is
 
 ## Deploy your own (independent external operator)
 
-1. Fork this repository. Run `yarn install --frozen-lockfile`, `yarn test`, `yarn build`.
+1. Fork this repository. Run `pnpm install --frozen-lockfile`, `pnpm test`, `pnpm build`.
 2. Import the repository into Vercel with the Vite preset. The root `api/` directory
    deploys alongside `dist/`; main is the production branch.
 3. Create your own Clerk application and configure parent sign-in. Use development
@@ -78,7 +78,7 @@ permission boundary between game backends. The workspace canonical contract is
    offline/reconnect. Configure operator backups and a retention/deletion process
    before relying on the cloud as the only copy.
 
-For full local cloud QA, use `vercel dev` with operator configuration. `yarn dev`
+For full local cloud QA, use `vercel dev` with operator configuration. `pnpm dev`
 is the fast local guest-mode game preview. Never put secrets in `VITE_*`, source,
 Git history or player exports. The config endpoint returns only a publishable key
 and readiness. Private API responses use no-store and authenticated ownership.

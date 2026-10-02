@@ -25,5 +25,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/jdorado/cloudkeepers.git"
-  }
+  },
+  "packageManager": "pnpm@10.30.3"
 }
