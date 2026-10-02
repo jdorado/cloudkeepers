@@ -11,7 +11,7 @@ accounts. Clerk is a managed dependency; the game/API are independently deployab
 - Shared Clerk application: Learning Games, production domain `eztudy.space`.
   Parent login offers Continue with Google; email codes remain a fallback.
   Children use nicknames.
-- Dedicated MongoDB Atlas integration: learning-games, database `learning_games`.
+- Shared MongoDB Atlas integration/deployment: learning-games, database `learning_games`, collection `game_saves`. This is the working reference binding for other workspace games.
 - Other apps can use `<app>.eztudy.space`, their own Vercel project and app ID,
   and this Clerk identity service. Add each exact app origin to its API config.
 - Source checkout: `/Users/juancamilo/dev/data_mirrors/ezfamily_data/work/projects/cloudkeepers`.
@@ -46,7 +46,18 @@ Online saves are debounced; visible status distinguishes online, device-only,
 waiting and conflict states. Guest play works when cloud setup is absent. Auth
 and database errors never create a shared anonymous cloud account.
 
-## Deploy your own
+## Another workspace game
+
+Reuse this existing Atlas binding, working private Mongo credential and
+`learning_games.game_saves`, plus the Learning Games Clerk production keys and
+configured Google connection. Give the game its own repository, Vercel project,
+origin and stable game ID; every server read/write uses `<gameId>:<verifiedClerkUserId>`.
+No new Atlas project, cluster, database, database user/password, Clerk application
+or Google OAuth client is a per-game step. Shared credentials are not a database
+permission boundary between game backends. The workspace canonical contract is
+`specs/_game_browser-spec.md`.
+
+## Deploy your own (independent external operator)
 
 1. Fork this repository. Run `yarn install --frozen-lockfile`, `yarn test`, `yarn build`.
 2. Import the repository into Vercel with the Vite preset. The root `api/` directory
@@ -76,7 +87,9 @@ and readiness. Private API responses use no-store and authenticated ownership.
 
 Reuse the pattern before extracting a framework. New apps keep their own public
 repository and Vercel project, use the shared Clerk application when they should
-share accounts, and keep app data isolated by stable app ID and verified user ID.
+share accounts, and keep app data isolated by stable app ID and verified user ID
+in the existing `learning_games.game_saves` collection. Reuse the working private
+Atlas binding; do not create another database/password per workspace game.
 Give each released app a subdomain of the same owned parent domain. Vercel
 serves each app from its own project and manages DNS and TLS. Configure Clerk
 on the parent domain so sessions work across subdomains, and allow only each
