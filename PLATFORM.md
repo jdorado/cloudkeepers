@@ -9,7 +9,8 @@ accounts. Clerk is a managed dependency; the game/API are independently deployab
 - Public source: https://github.com/jdorado/cloudkeepers (MIT).
 - Vercel project: `cloudkeepers`; game URL: https://cloudkeepers.eztudy.space.
 - Shared Clerk application: Learning Games, production domain `eztudy.space`.
-  Parent login uses email verification codes; children use nicknames.
+  Parent login offers Continue with Google; email codes remain a fallback.
+  Children use nicknames.
 - Dedicated MongoDB Atlas integration: learning-games, database `learning_games`.
 - Other apps can use `<app>.eztudy.space`, their own Vercel project and app ID,
   and this Clerk identity service. Add each exact app origin to its API config.
@@ -53,6 +54,10 @@ and database errors never create a shared anonymous cloud account.
 3. Create your own Clerk application and configure parent sign-in. Use development
    keys on localhost or Vercel preview addresses. For a public release, use production
    keys and an owned domain; a subdomain of an existing Vercel-managed domain works.
+   Enable Google in Clerk. Production requires your own Google OAuth web client:
+   use the app URL as its JavaScript origin and the callback URL shown by Clerk
+   as its redirect URI. Set the Google audience to In production so friends can
+   sign in. Configure client credentials privately in Clerk, never in this repo.
 4. Provision a Mongo database and an app-scoped credential. Configure only server
    environment variables: `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `MONGODB_URI`,
    `MONGODB_DATABASE`, and exact comma-separated `APP_ORIGINS` including scheme.
@@ -75,13 +80,16 @@ share accounts, and keep app data isolated by stable app ID and verified user ID
 Give each released app a subdomain of the same owned parent domain. Vercel
 serves each app from its own project and manages DNS and TLS. Configure Clerk
 on the parent domain so sessions work across subdomains, and allow only each
-app’s exact origin in its API. Unrelated domains need Clerk satellite configuration.
+app’s exact origin in its API. Set both sign-in and sign-up return URLs to the
+current app’s origin, so Google login returns to that app rather than the shared
+identity service’s default homepage. Unrelated domains need Clerk satellite configuration.
 
 Add another game only when needed; reuse scene assets and the save boundary.
 Co-guardian access, data deletion UI, server-verified learning actions, longer
 telemetry retention, content packs and optional agent authoring are later work.
 
-Sources reviewed 1 October 2026:
+Sources reviewed 2 October 2026:
+[Google sign-in setup](https://clerk.com/docs/guides/configure/auth-strategies/social-connections/google),
 [Clerk JavaScript](https://clerk.com/docs/js-frontend/getting-started/quickstart),
 [Clerk token verification](https://clerk.com/docs/reference/backend/verify-token),
 [shared domains](https://clerk.com/docs/guides/dashboard/dns-domains/satellite-domains),

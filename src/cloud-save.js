@@ -104,7 +104,9 @@ export async function setupCloud({ apply, guest, status, activate }) {
       if (current === id) $('play').disabled = false;
     }
     $('parent-login').disabled = false;
-    $('parent-login').onclick = () => clerk.openSignIn();
+    $('parent-login').onclick = () => clerk.openSignIn({
+      forceRedirectUrl: window.location.origin, signUpForceRedirectUrl: window.location.origin,
+    });
     $('parent-logout').onclick = async () => { await cloud.flush(); await clerk.signOut(); };
     $('import-device').onclick = () => { if (confirm('Replace this account’s current game with the guest save from this device? Download a backup first if needed.')) { const library = guest(); apply(library); cloud.save(library); } };
     $('use-online').onclick = () => cloud.resolve(false);

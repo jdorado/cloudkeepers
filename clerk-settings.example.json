@@ -16,6 +16,7 @@
     "required": false
   },
   "connection_oauth_google": {
-    "enabled": false
+    "enabled": true,
+    "show_account_selector_prompt": true
   }
 }

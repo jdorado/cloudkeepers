@@ -165,7 +165,7 @@ and generic defaults. Operator credentials and player exports do not belong in s
 
 ## Parent login and online saves
 
-When cloud configuration is complete, **Sign in to save online** opens Clerk. Each parent
+When cloud configuration is complete, **Sign in to save online** opens Clerk with **Continue with Google**. Each parent
 has a private game library with child nicknames and separate year tracks. The game
 shows **Saved online** after acknowledgement; otherwise the account cache keeps
 work on this device. Interrupted requests retry automatically. Sign-out and backup controls are in **Options**. Another device’s
@@ -179,7 +179,7 @@ Cloud save verification covers 23 focused checks plus a real development-account
 browser flow: a separate browser recovered the exact question and unfinished
 answer, and concurrent edits prompted a save choice. Production DNS, HTTPS,
 email configuration, live keys and the parent login screen are verified.
-A parent completes their own email verification on first use.
+Google sign-in uses the parent’s Google account; email verification is a fallback.
 
 Clerk handles adult identity; Mongo stores nicknames, selected tracks, practice
 history and progress. Use aliases rather than full names. Cloudkeepers has one parent
