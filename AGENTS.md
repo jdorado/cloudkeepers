@@ -1,5 +1,8 @@
 # Cloudkeepers
 
+Canonical local checkout: `/Users/juancamilo/dev/other/cloudkeepers`.
+New browser games belong under `/Users/juancamilo/dev/other/<repository-name>`.
+
 Standalone public maths game. Work on main; preserve unrelated changes.
 Vite/Three.js owns play; Vercel Node API owns verified identity and Mongo saves.
 Clerk is parent authentication; child nicknames are data, never credentials.

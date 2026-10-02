@@ -14,8 +14,8 @@ accounts. Clerk is a managed dependency; the game/API are independently deployab
 - Shared MongoDB Atlas integration/deployment: learning-games, database `learning_games`, collection `game_saves`. This is the working reference binding for other workspace games.
 - Other apps can use `<app>.eztudy.space`, their own Vercel project and app ID,
   and this Clerk identity service. Add each exact app origin to its API config.
-- Source checkout: `/Users/juancamilo/dev/data_mirrors/ezfamily_data/work/projects/cloudkeepers`.
-  The enclosing private mirror ignores this independent public checkout.
+- Source checkout: `/Users/juancamilo/dev/other/cloudkeepers`.
+  Game source is outside the private agent mirror.
 
 ## Boundaries
 
