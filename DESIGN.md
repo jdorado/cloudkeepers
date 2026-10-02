@@ -21,11 +21,13 @@ rescue or failure screen.
 ## Practice milestone
 
 A rescue needs six independent first-attempt answers among the most recent eight
-questions attempted: four at Challenge difficulty, at least two representations
-and six distinct question keys. Two any-difficulty slots and four gold Challenge
-slots explain the goal. Explicit remaining text and the completed-level screen
-show when travel unlocks. The game alternates question forms when possible and
-avoids recent keys. Small fluency banks eventually revisit old facts.
+questions attempted, with at least two representations and six distinct question
+keys. Every adaptive difficulty can earn rescue stars. Four independent Challenge
+answers earn an optional persistent Gold achievement, but never block travel.
+Explicit remaining text and the completed-level screen show when travel unlocks;
+six displayed rescue stars therefore always means complete. The game alternates
+question forms when possible and avoids recent keys. Small fluency banks eventually
+revisit old facts.
 
 Two independent answers raise the next question's band; two distinct misses lower
 it. Each island adapts independently. Hints and corrected retries restore the

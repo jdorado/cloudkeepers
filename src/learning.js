@@ -14,7 +14,7 @@ export function bookFor(library, playerId, year) {
   return player.books[year] ||= createBook();
 }
 export function progressFor(book, task) {
-  return book.levels[task] ||= { band: book.startBand, points: 0, recent: [], cleanRun: 0, missRun: 0, completed: 0, independent: 0, pending: null, seen: [], mastered: false };
+  return book.levels[task] ||= { band: book.startBand, points: 0, recent: [], cleanRun: 0, missRun: 0, completed: 0, independent: 0, pending: null, seen: [], mastered: false, gold: false, goldKeys: [] };
 }
 export function pendingQuestion(book, task, year, rng = Math.random) {
   const progress = progressFor(book, task);
@@ -39,7 +39,9 @@ function record(progress, pending, independent) {
   else { progress.cleanRun = 0; if (pending.missed) { progress.missRun++; if (progress.missRun >= LEARNING.lowerAfter) { progress.band = Math.max(0, progress.band - 1); progress.missRun = 0; } } else progress.missRun = 0; }
   pending.recorded = true;
   const clean = progress.recent.filter(item => item.clean);
-  if (clean.length >= LEARNING.mastery.independent && clean.filter(item => item.band === 2).length >= LEARNING.mastery.challenge && new Set(clean.map(item => item.form)).size >= LEARNING.mastery.forms && new Set(clean.map(item => item.key)).size >= LEARNING.mastery.independent) progress.mastered = true;
+  if (independent && pending.question.band === 2 && !progress.goldKeys.includes(pending.question.key)) progress.goldKeys = [...progress.goldKeys, pending.question.key].slice(-LEARNING.mastery.challenge);
+  if (clean.length >= LEARNING.mastery.independent && new Set(clean.map(item => item.form)).size >= LEARNING.mastery.forms && new Set(clean.map(item => item.key)).size >= LEARNING.mastery.independent) progress.mastered = true;
+  if (progress.mastered && progress.goldKeys.length >= LEARNING.mastery.challenge) progress.gold = true;
 }
 export function useHint(book, task) {
   const pending = progressFor(book, task).pending; if (!pending || pending.hinted) return;
@@ -54,12 +56,12 @@ export function submitAnswer(book, task, answer) {
   pending.attempts++;
   event(book, { type: 'answer', task, questionId: pending.id, year: pending.year, band: pending.question.band, key: pending.question.key, form: pending.question.form, attempt: pending.attempts, correct, independent: correct && !pending.hinted && !pending.missed, hinted: pending.hinted, activeMs: Math.round(pending.activeMs), contentVersion: 'uk-maths-v1' });
   pending.draft = '';
-  const previousBand = p.band, previouslyMastered = p.mastered;
+  const previousBand = p.band, previouslyMastered = p.mastered, previouslyGold = p.gold;
   if (!correct) { pending.missed = true; if (!pending.recorded) record(p, pending, false); return { correct: false, changedBand: p.band !== previousBand }; }
   if (!pending.recorded) record(p, pending, !pending.hinted && !pending.missed);
   p.points++; p.completed++; const independent = !pending.hinted && !pending.missed;
   p.pending = null;
-  return { correct: true, independent, newlyMastered: !previouslyMastered && p.mastered, changedBand: p.band !== previousBand };
+  return { correct: true, independent, newlyMastered: !previouslyMastered && p.mastered, newlyGold: !previouslyGold && p.gold, changedBand: p.band !== previousBand };
 }
 export const masteredTasks = book => new Set(LEARNING.levels.filter(l => book.levels[l.task]?.mastered).map(l => l.task));
 export const poweredTasks = book => new Set(LEARNING.levels.filter(l => (book.levels[l.task]?.points || 0) >= LEARNING.routePoints).map(l => l.task));
@@ -69,12 +71,13 @@ export function masteryStatus(progress) {
 }
 export function rescueStatus(progress) {
   const status = masteryStatus(progress), target = LEARNING.mastery.independent;
-  if (progress.mastered) return { stars: target, challengeStars: LEARNING.mastery.challenge, otherStars: target - LEARNING.mastery.challenge, remaining: 0, challengeLeft: 0, stylesLeft: 0, complete: true };
+  const goldProgress = progress.gold ? LEARNING.mastery.challenge : Math.min(LEARNING.mastery.challenge, progress.goldKeys?.length || status.challenge);
+  if (progress.mastered) return { stars: target, remaining: 0, stylesLeft: 0, complete: true, gold: progress.gold === true, goldProgress };
   const distinct = new Set(progress.recent.filter(item => item.clean).map(item => item.key)).size;
-  const challengeLeft = LEARNING.mastery.challenge - status.challenge;
-  const remaining = Math.max(target - status.independent, challengeLeft, target - distinct);
-  const stars = target - remaining, challengeStars = Math.min(status.challenge, stars);
-  return { stars, challengeStars, otherStars: stars - challengeStars, remaining, challengeLeft, stylesLeft: LEARNING.mastery.forms - status.forms, complete: false };
+  const stylesLeft = LEARNING.mastery.forms - status.forms;
+  // An incomplete level never presents all six stars, even for an inconsistent imported state.
+  const remaining = Math.max(1, target - status.independent, target - distinct, stylesLeft ? 1 : 0);
+  return { stars: target - remaining, remaining, stylesLeft, complete: false, gold: progress.gold === true, goldProgress };
 }
 function validQuestion(q, family) {
   if (!q || q.family !== family || ![0, 1, 2].includes(q.band)) return false;
@@ -122,6 +125,10 @@ export function restoreLibrary(raw) {
         p.recent = Array.isArray(oldProgress.recent) ? oldProgress.recent.filter(item => item && typeof item.key === 'string' && typeof item.form === 'string' && [0, 1, 2].includes(item.band) && typeof item.clean === 'boolean').slice(-LEARNING.mastery.window) : [];
         p.seen = Array.isArray(oldProgress.seen) ? oldProgress.seen.filter(s => typeof s === 'string').slice(-100) : [];
         p.mastered = oldProgress.mastered === true;
+        // Before optional Gold existed, every completed level had already met its Challenge requirement.
+        p.gold = oldProgress.gold === true || (!Object.hasOwn(oldProgress, 'gold') && p.mastered);
+        const recentGold = [...new Set(p.recent.filter(item => item.clean && item.band === 2).map(item => item.key))];
+        p.goldKeys = Array.isArray(oldProgress.goldKeys) ? [...new Set(oldProgress.goldKeys.filter(key => typeof key === 'string'))].slice(-LEARNING.mastery.challenge) : recentGold.slice(-LEARNING.mastery.challenge);
         const pending = oldProgress.pending;
         if (validQuestion(pending?.question, level.type)) {
           p.pending = { id: typeof pending.id === 'string' ? pending.id : newId(), year, question: pending.question, missed: pending.missed === true, hinted: pending.hinted === true, recorded: pending.recorded === true, attempts: Number.isSafeInteger(pending.attempts) && pending.attempts >= 0 ? pending.attempts : pending.missed ? 1 : 0, activeMs: Number.isFinite(pending.activeMs) && pending.activeMs >= 0 ? pending.activeMs : 0, draft: typeof pending.draft === 'string' ? pending.draft.replace(/[^0-9]/g, '').slice(0, 5) : '' };

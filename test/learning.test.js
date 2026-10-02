@@ -77,20 +77,37 @@ test('missing-number arithmetic never displays the missing operand in a duplicat
   }
   assert.ok(checked > 100);
 });
-test('rescue progress nests Challenge stars inside six total slots and stays complete in later practice', () => {
+test('six rescue stars always means complete, while Gold remains an optional achievement', () => {
   const p = progressFor(createBook(), 'bridge');
   const clean = (band, i, form = '0') => ({ clean: true, band, key: `fact-${i}`, form });
   p.recent = Array.from({ length: 6 }, (_, i) => clean(1, i, String(i % 2)));
-  let status = rescueStatus(p); assert.equal(status.stars, 2); assert.equal(status.remaining, 4); assert.equal(status.challengeLeft, 4);
-  p.recent = [clean(1, 0), clean(1, 1), clean(2, 2), clean(2, 3), clean(2, 4)];
-  status = rescueStatus(p); assert.equal(status.stars, 5); assert.equal(status.remaining, 1); assert.equal(status.challengeLeft, 1);
-  p.recent.push(clean(2, 5)); status = rescueStatus(p); assert.equal(status.stars, 6); assert.equal(status.stylesLeft, 1); assert.equal(status.complete, false);
-  p.mastered = true; p.recent = []; status = rescueStatus(p); assert.equal(status.stars, 6); assert.equal(status.complete, true); assert.equal(status.remaining, 0);
+  let status = rescueStatus(p); assert.equal(status.stars, 5); assert.equal(status.remaining, 1); assert.equal(status.goldProgress, 0); assert.equal(status.complete, false);
+  p.recent = Array.from({ length: 6 }, (_, i) => clean(i < 4 ? 2 : 1, i, '0'));
+  status = rescueStatus(p); assert.equal(status.stars, 5); assert.equal(status.remaining, 1); assert.equal(status.stylesLeft, 1); assert.equal(status.complete, false);
+  p.mastered = true; p.gold = false; p.recent = []; status = rescueStatus(p);
+  assert.equal(status.stars, 6); assert.equal(status.complete, true); assert.equal(status.gold, false); assert.equal(status.remaining, 0);
 });
 test('the last rescue questions introduce another style before the learner gets stuck at six stars', () => {
   const book = createBook(2), p = progressFor(book, 'bridge');
   p.recent = Array.from({ length: 4 }, (_, i) => ({ clean: true, band: 2, form: '0', key: `previous-${i}` }));
   assert.notEqual(pendingQuestion(book, 'bridge', 3, seeded()).question.form, '0');
+});
+test('support questions can complete an island without Challenge, and Gold is earned separately', () => {
+  const supportBook = createBook(0), support = progressFor(supportBook, 'bridge'), rng = seeded();
+  for (let answered = 0; !support.mastered && answered < 12; answered++) {
+    support.band = 0; support.cleanRun = 0;
+    const q = pendingQuestion(supportBook, 'bridge', 1, rng).question;
+    assert.equal(q.band, 0); submitAnswer(supportBook, 'bridge', q.answer);
+  }
+  assert.equal(support.mastered, true); assert.equal(support.gold, false); assert.equal(rescueStatus(support).stars, 6);
+
+  const challengeBook = createBook(2), challenge = progressFor(challengeBook, 'bridge'); let goldResult;
+  for (let answered = 0; answered < 6; answered++) {
+    const q = pendingQuestion(challengeBook, 'bridge', 1, rng).question;
+    const result = submitAnswer(challengeBook, 'bridge', q.answer);
+    if (result.newlyGold) goldResult = result;
+  }
+  assert.equal(challenge.mastered, true); assert.equal(challenge.gold, true); assert.equal(goldResult.newlyGold, true);
 });
 test('two independent answers raise difficulty; two distinct misses lower it once, even with retries', () => {
   const book = createBook(1), rng = seeded();
@@ -154,6 +171,12 @@ test('one island is one level and restoring a legacy journey keeps previously pl
   assert.equal(progressFor(book, 'light-1').pending.hinted, true);
   assert.equal(progressFor(book, 'light-1').points, 2);
   assert.deepEqual(JOURNEY.map(island => island.number), Array.from({ length: 12 }, (_, i) => i + 1));
+});
+test('old completed saves keep their former Challenge achievement while new non-Gold completion stays non-Gold', () => {
+  const legacy = { version: 3, selected: 'p', players: { p: { year: 1, books: { 1: { levels: { bridge: { mastered: true } } } } } } };
+  let restored = restoreLibrary(legacy); assert.equal(progressFor(bookFor(restored, 'p', 1), 'bridge').gold, true);
+  legacy.players.p.books[1].levels.bridge.gold = false;
+  restored = restoreLibrary(legacy); assert.equal(progressFor(bookFor(restored, 'p', 1), 'bridge').gold, false);
 });
 test('generic nicknames, current island, draft answer, time and question identity survive reload', () => {
   let library = createLibrary(); const id = addPlayer(library, 'A friend', 2); library.selected = id;

@@ -47,15 +47,14 @@ Stop the development server before using `yarn preview` on the same port.
   landmark, without unlocking a different maths level. Completed islands remain
   available for practice. Stops already played in older saves remain accessible.
 - Rescue each creature with six independent first-attempt answers among the last
-  eight questions attempted, including four at Challenge difficulty, two question
-  styles, and six different question keys. This is a game practice milestone,
+  eight questions attempted, using two question styles and six different question
+  keys. Any difficulty can earn a rescue star. This is a game practice milestone,
   rather than a school assessment or a claim of complete topic mastery.
-- Each question shows one rescue checklist: two stars at any difficulty and four
-  gold Challenge stars, with the remaining requirements stated directly. The
-  Challenge stars are part of the six, not an extra set. Practice builds
-  confidence; the selected difficulty explains the actual number range or skill.
-  Landmark restoration is shown separately. A completed level shows all six stars
-  and offers **Travel to next island** or extra practice.
+- Four independent Challenge answers earn an optional persistent Gold achievement;
+  Gold never blocks travel. Practice builds confidence and the selected difficulty
+  explains the actual number range or skill. Landmark restoration is a separate
+  three-answer midpoint reward. A completed level always shows all six stars and
+  offers **Travel to next island** or extra practice.
 - Missing-number arithmetic shows its equation once. The hidden operand is never
   drawn in a column or crossed-object diagram. Other column arithmetic uses a
   simple total/remaining-answer field rather than repeating the calculation.
