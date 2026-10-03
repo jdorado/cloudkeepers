@@ -12,3 +12,7 @@ cloudkeepers-save*.json
 .clerk.json
 
 .clerk*.json
+
+# Private learning review exports
+*-learning-evidence.json
+learning-exports/

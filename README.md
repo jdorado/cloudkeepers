@@ -187,3 +187,7 @@ Clerk handles adult identity; Mongo stores nicknames, selected tracks, practice
 history and progress. Use aliases rather than full names. Cloudkeepers has one parent
 per household and bounded history, with no AI processing or co-guardian invitations.
 See [PLATFORM.md](PLATFORM.md) for operator setup and current limitations.
+
+## Learning evidence
+
+Parent review can download exact questions, submitted answers, retries, help and approximate active time. Signed-in evidence stays in private parent-owned saves; guest evidence stays on the device. See [the evidence format and manual EzStudy workflow](LEARNING_EVIDENCE.md).

@@ -14,7 +14,7 @@ accounts. Clerk is a managed dependency; the game/API are independently deployab
 - Shared MongoDB Atlas integration/deployment: learning-games, database `learning_games`, collection `game_saves`. This is the working reference binding for other workspace games.
 - Other apps can use `<app>.eztudy.space`, their own Vercel project and app ID,
   and this Clerk identity service. Add each exact app origin to its API config.
-- Source checkout: `/Users/juancamilo/dev/other/cloudkeepers`.
+- Source checkout: `/Users/juancamilo/dev/games/cloudkeepers`.
   Game source is outside the private agent mirror.
 
 ## Boundaries
@@ -108,3 +108,11 @@ Sources reviewed 2 October 2026:
 [shared domains](https://clerk.com/docs/guides/dashboard/dns-domains/satellite-domains),
 [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite),
 [Atlas integration](https://www.mongodb.com/docs/atlas/reference/partner-integrations/vercel/).
+
+## Learning evidence release — 3 October 2026
+
+Added bounded private question/attempt/help evidence and a parent JSON export for
+manual EzStudy review. Old saves remain compatible and historical evidence is not
+invented. See `LEARNING_EVIDENCE.md`. Local verification: 28 tests and the
+production build passed; browser checks covered answer/help and evidence download.
+Deployment commit and status are available in the production deployment metadata.

@@ -1,7 +1,8 @@
 import { LEARNING, generateQuestion } from './curriculum.js';
+import { restoreEvidence, recordEvidence, evidenceContext } from './evidence.js';
 import { newId } from './id.js';
 
-export function createBook(startBand = 1) { return { startBand, area: 0, currentTask: null, resumeTask: null, levels: {}, discoveries: [], events: [], celebrated: false }; }
+export function createBook(startBand = 1) { return { startBand, area: 0, currentTask: null, resumeTask: null, levels: {}, discoveries: [], evidence: restoreEvidence(), events: [], celebrated: false }; }
 export function createLibrary() { return { version: 3, selected: LEARNING.players[0].id, players: Object.fromEntries(LEARNING.players.map(p => [p.id, { name: p.name, year: p.year, books: {} }])) }; }
 export function addPlayer(library, name = 'New player', year = 1) {
   if (Object.keys(library.players).length >= 20) throw new Error('This device already has 20 players');
@@ -30,9 +31,11 @@ export function pendingQuestion(book, task, year, rng = Math.random) {
     }
     progress.seen = [...progress.seen, question.key].slice(-100);
     progress.pending = { id: newId(), year, question, missed: false, hinted: false, recorded: false, attempts: 0, activeMs: 0, draft: '' };
+    recordEvidence(book.evidence, context(progress.pending, task), 'question');
   }
   return progress.pending;
 }
+function context(pending, task) { return evidenceContext({ ...pending.question, id: pending.id }, pending.year, pending.question.band, task, pending.activeMs, 'uk-maths-v1'); }
 function record(progress, pending, independent) {
   progress.recent = [...progress.recent, { clean: independent, band: pending.question.band, form: pending.question.form, key: pending.question.key }].slice(-LEARNING.mastery.window);
   if (independent) { progress.independent++; progress.cleanRun++; progress.missRun = 0; if (progress.cleanRun >= LEARNING.raiseAfter) { progress.band = Math.min(2, progress.band + 1); progress.cleanRun = 0; } }
@@ -43,9 +46,11 @@ function record(progress, pending, independent) {
   if (clean.length >= LEARNING.mastery.independent && new Set(clean.map(item => item.form)).size >= LEARNING.mastery.forms && new Set(clean.map(item => item.key)).size >= LEARNING.mastery.independent) progress.mastered = true;
   if (progress.mastered && progress.goldKeys.length >= LEARNING.mastery.challenge) progress.gold = true;
 }
+export function skipPending(book, task) { const pending = progressFor(book, task).pending; if (pending) recordEvidence(book.evidence, context(pending, task), 'skip'); }
 export function useHint(book, task) {
   const pending = progressFor(book, task).pending; if (!pending || pending.hinted) return;
   pending.hinted = true;
+  recordEvidence(book.evidence, context(pending, task), 'hint');
   event(book, { type: 'hint', task, questionId: pending.id, year: pending.year, band: pending.question.band, key: pending.question.key, form: pending.question.form, contentVersion: 'uk-maths-v1', activeMs: Math.round(pending.activeMs) });
 }
 export function submitAnswer(book, task, answer) {
@@ -54,6 +59,7 @@ export function submitAnswer(book, task, answer) {
   const entered = String(answer).trim();
   const correct = pending.question.options ? entered.toLowerCase() === pending.question.answer.toLowerCase() : /^\d+$/.test(entered) && Number(entered) === Number(pending.question.answer);
   pending.attempts++;
+  recordEvidence(book.evidence, context(pending, task), 'answer', { submittedAnswer: entered.slice(0, 1000), attempt: pending.attempts, correct, helpUsed: pending.hinted, independent: correct && !pending.hinted && !pending.missed });
   event(book, { type: 'answer', task, questionId: pending.id, year: pending.year, band: pending.question.band, key: pending.question.key, form: pending.question.form, attempt: pending.attempts, correct, independent: correct && !pending.hinted && !pending.missed, hinted: pending.hinted, activeMs: Math.round(pending.activeMs), contentVersion: 'uk-maths-v1' });
   pending.draft = '';
   const previousBand = p.band, previouslyMastered = p.mastered, previouslyGold = p.gold;
@@ -111,6 +117,7 @@ export function restoreLibrary(raw) {
     for (const year of LEARNING.years) {
       const data = old.books?.[year]; if (!data || typeof data !== 'object') continue;
       const book = createBook([0, 1, 2].includes(data.startBand) ? data.startBand : 1);
+      book.evidence = restoreEvidence(data.evidence);
       book.area = [0, 1, 2].includes(data.area) ? data.area : 0;
       book.currentTask = LEARNING.levels.some(l => l.task === data.currentTask) ? data.currentTask : null;
       book.resumeTask = LEARNING.levels.some(l => l.task === data.resumeTask) ? data.resumeTask : null;

@@ -1,3 +1,4 @@
+import { downloadEvidence } from './evidence.js';
 import './style.css';
 import './tokens.css';
 import './learning.css';
@@ -6,7 +7,7 @@ import { JOURNEY, islandFor, islandAvailable, currentIsland, nextIsland } from '
 import { readSave, writeSave } from './save-store.js';
 import { SkyWorld } from './world.js';
 import { LEARNING, levelTitle, difficultyDescription } from './curriculum.js';
-import { restoreLibrary, addPlayer, bookFor, progressFor, pendingQuestion, submitAnswer, useHint, masteredTasks, poweredTasks, rescueStatus } from './learning.js';
+import { restoreLibrary, addPlayer, bookFor, progressFor, pendingQuestion, skipPending, submitAnswer, useHint, masteredTasks, poweredTasks, rescueStatus } from './learning.js';
 import { questionVisual, escapeHtml as e } from './question-view.js';
 import { setupCloud } from './cloud-save.js';
 
@@ -153,7 +154,7 @@ function practiceLog() {
   const first = answers.filter(event => event.attempt === 1);
   const correct = first.filter(event => event.correct && event.independent);
   const hints = book.events.filter(event => event.type === 'hint');
-  return `<details class="practice-log"><summary>Parent: practice history on this device</summary><p>${answers.length} answer attempts · ${correct.length}/${first.length} first answers correct without help · ${hints.length} hints. Showing the most recent 500 events for this player and school year.</p><table><thead><tr><th>Island</th><th>Difficulty</th><th>Try</th><th>Result</th><th>Thinking time*</th></tr></thead><tbody>${answers.slice(-12).reverse().map(event => `<tr><td>${islandFor(event.task)?.number}</td><td>${e(LEARNING.bands[event.band] || '')}</td><td>${event.attempt}</td><td>${event.correct ? event.independent ? 'Correct, independent' : 'Correct with help/retry' : 'Try again'}</td><td>${Math.round(event.activeMs / 1000)}s</td></tr>`).join('')}</tbody></table><p>*Approximate cumulative time with the question open and browser focused. Hidden tabs, menus and pauses after 90 seconds without interaction are excluded. Timing does not decide stars or difficulty. Download save includes this local history.</p></details>`;
+  return `<button id="download-evidence" class="secondary">Download learning evidence</button><details class="practice-log"><summary>Parent: practice history</summary><p>${answers.length} answer attempts · ${correct.length}/${first.length} first answers correct without help · ${hints.length} hints. Showing the most recent 500 events for this player and school year.</p><table><thead><tr><th>Island</th><th>Difficulty</th><th>Try</th><th>Result</th><th>Thinking time*</th></tr></thead><tbody>${answers.slice(-12).reverse().map(event => `<tr><td>${islandFor(event.task)?.number}</td><td>${e(LEARNING.bands[event.band] || '')}</td><td>${event.attempt}</td><td>${event.correct ? event.independent ? 'Correct, independent' : 'Correct with help/retry' : 'Try again'}</td><td>${Math.round(event.activeMs / 1000)}s</td></tr>`).join('')}</tbody></table><p>*Approximate cumulative time with the question open and browser focused. Hidden tabs, menus and pauses after 90 seconds without interaction are excluded. Timing does not decide stars or difficulty. Download learning evidence includes exact questions and answers. Older saves have no reconstructed evidence.</p></details>`;
 }
 function showLevels() {
   keys.clear(); touchDirections.clear(); destination = null;
@@ -240,7 +241,7 @@ function renderQuestion() {
   const choices = q.options ? `<div class="answer-choices" aria-label="Choose your answer">${q.options.map(option => `<button type="button" data-answer="${e(option)}">${e(option)}</button>`).join('')}</div>` : `<label class="equation" for="answer"><span>${e(equationLabel)}</span><input id="answer" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="5" aria-label="Your answer" /></label><div class="keypad" aria-label="Number buttons">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(n => `<button type="button" data-number="${n}">${n}</button>`).join('')}<button type="button" id="erase-number" aria-label="Delete a digit">⌫</button><button type="button" id="clear-number" aria-label="Clear answer">C</button></div><button class="primary" type="submit">Check answer <span>✦</span></button>`;
   const missing = ['add', 'subtract'].includes(q.family) && q.expression.includes('?');
   shell(`${progressHtml(p)}${difficultyHtml(t, q)}<p class="puzzle-intro" id="question-prompt">${e(q.prompt)}</p>${q.options && q.visual.type === 'numberCards' ? '' : questionVisual(q)}${missing ? '<p class="missing-note">Enter the number that belongs in the ? box.</p>' : ''}<form class="answer-form">${q.options ? `<p class="choice-expression">${e(q.expression)}</p>` : ''}${choices}<p class="feedback" id="feedback" role="status" aria-live="polite">${pending.missed ? 'Take your time. This question is ready for another try.' : ''}</p></form><button class="hint-button" id="hint-button" aria-expanded="${pending.hinted}">${pending.hinted ? 'Hide hint' : 'Show a hint'}</button><div class="hint" id="hint" ${pending.hinted ? '' : 'hidden'}>${e(q.hint)}</div><p class="mastery-details" id="question-credit">${e(questionCredit(p, pending))}</p><details class="rescue-rules"><summary>How do rescue stars work?</summary><p>Collect six stars at the difficulty that is right for you. Solve on your first try without opening a hint. We check your last eight questions, with different facts and at least two question styles. Hints and retries still restore landmarks. Four independent Challenge answers earn optional Gold, but Gold never blocks the next island. Rescued friends stay rescued.</p></details>`);
-  $('question-band').onchange = () => { p.band = Number($('question-band').value); p.pending = null; p.cleanRun = 0; p.missRun = 0; save(); renderQuestion(); };
+  $('question-band').onchange = () => { skipPending(book, t.id); p.band = Number($('question-band').value); p.pending = null; p.cleanRun = 0; p.missRun = 0; save(); renderQuestion(); };
   const input = $('answer');
   if (input) {
     input.value = pending.draft;
@@ -380,3 +381,5 @@ function applyLibrary(next) {
   book = bookFor(library, playerId, year); restoreWorld(); buildMarkers(); profileSetup(); setMode('opening');
 }
 setupCloud({ apply: applyLibrary, guest: () => readSave().library, activate: value => { cloud = value; }, status: (message, error = false) => { $('save-status').textContent = message; $('save-status').classList.toggle('save-error', error); } });
+
+document.addEventListener('click', event => { if (event.target.closest?.('#download-evidence')) downloadEvidence('cloudkeepers', Object.entries(library.players).map(([profileId, player]) => ({ profileId, nickname: player.name, books: Object.fromEntries(Object.entries(player.books).map(([year, book]) => [year, { evidence: book.evidence, pending: Object.fromEntries(Object.entries(book.levels).filter(([, progress]) => progress.pending).map(([task, progress]) => [task, progress.pending])) }])) }))); });
