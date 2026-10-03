@@ -1,7 +1,6 @@
-import { captureSave } from '../server/learning-service.js';
+import { crossGameContext, linkLearner } from '../server/cross-game-learning.js';
 import { verifyToken } from '@clerk/backend';
-import { savesCollection, learningCollection } from '../server/database.js';
-import { MAX_BYTES, readAccount } from '../server/save-service.js';
+import { savesCollection, learningCollection, learnersCollection } from '../server/database.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'private, no-store');
@@ -18,11 +17,15 @@ export default async function handler(req, res) {
     identity = claims.sub;
   } catch { return res.status(401).json({ error: 'Sign in again to save online.' }); }
   try {
-    if (Number(req.headers['content-length']) > MAX_BYTES) return res.status(413).json({ error: 'This save is too large.' });
-    const collection = await savesCollection();
-    if (req.method === 'GET') return res.status(200).json(await readAccount(collection, identity));
-    const input = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const result = await captureSave(collection, await learningCollection(), identity, input);
-    return res.status(result.status).json(result.body);
+    if (req.method === 'PUT') {
+      if (Number(req.headers['content-length']) > 4096) return res.status(413).json({ error: 'Request too large.' });
+      const input = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      if (JSON.stringify(input || {}).length > 4096) return res.status(413).json({ error: 'Request too large.' });
+      const result = await linkLearner(await savesCollection(), await learnersCollection(), identity, input);
+      return res.status(result.status).json(result.body);
+    }
+    const cursor = new URL(req.url, 'https://game.invalid').searchParams.get('cursor') || '';
+    if (cursor && !/^[a-f0-9]{64}$/.test(cursor)) return res.status(400).json({ error: 'Invalid cursor.' });
+    return res.status(200).json(await crossGameContext(await savesCollection(), await learningCollection(), await learnersCollection(), identity, cursor));
   } catch { return res.status(503).json({ error: 'Online saving is unavailable. Your device save is safe; try again.' }); }
 }

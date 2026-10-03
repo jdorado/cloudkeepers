@@ -28,7 +28,7 @@ export async function writeAccount(collection, userId, input) {
     return current.digest === digest ? { status: 200, body: publicSave(current) } : { status: 409, body: { error: 'This operation ID was already used for a different save.', ...publicSave(current) } };
   }
   if ((current?.revision || 0) !== input.revision) return { status: 409, body: { error: 'Another device has saved newer progress.', ...publicSave(current) } };
-  const next = { _id, revision: input.revision + 1, library, mutationId: input.mutationId, digest, updatedAt: new Date().toISOString() };
+  const next = { _id, parentId: userId, revision: input.revision + 1, library, mutationId: input.mutationId, digest, updatedAt: new Date().toISOString() };
   try {
     if (!current) await collection.insertOne(next);
     else {

@@ -1,4 +1,3 @@
-import { downloadEvidence } from './evidence.js';
 import './style.css';
 import './tokens.css';
 import './learning.css';
@@ -154,7 +153,7 @@ function practiceLog() {
   const first = answers.filter(event => event.attempt === 1);
   const correct = first.filter(event => event.correct && event.independent);
   const hints = book.events.filter(event => event.type === 'hint');
-  return `<button id="download-evidence" class="secondary">Download learning evidence</button><details class="practice-log"><summary>Parent: practice history</summary><p>${answers.length} answer attempts · ${correct.length}/${first.length} first answers correct without help · ${hints.length} hints. Showing the most recent 500 events for this player and school year.</p><table><thead><tr><th>Island</th><th>Difficulty</th><th>Try</th><th>Result</th><th>Thinking time*</th></tr></thead><tbody>${answers.slice(-12).reverse().map(event => `<tr><td>${islandFor(event.task)?.number}</td><td>${e(LEARNING.bands[event.band] || '')}</td><td>${event.attempt}</td><td>${event.correct ? event.independent ? 'Correct, independent' : 'Correct with help/retry' : 'Try again'}</td><td>${Math.round(event.activeMs / 1000)}s</td></tr>`).join('')}</tbody></table><p>*Approximate cumulative time with the question open and browser focused. Hidden tabs, menus and pauses after 90 seconds without interaction are excluded. Timing does not decide stars or difficulty. Download learning evidence includes exact questions and answers. Older saves have no reconstructed evidence.</p></details>`;
+  return `<details class="practice-log"><summary>Parent: practice history</summary><p>${answers.length} answer attempts · ${correct.length}/${first.length} first answers correct without help · ${hints.length} hints. Showing the most recent 500 events for this player and school year.</p><table><thead><tr><th>Island</th><th>Difficulty</th><th>Try</th><th>Result</th><th>Thinking time*</th></tr></thead><tbody>${answers.slice(-12).reverse().map(event => `<tr><td>${islandFor(event.task)?.number}</td><td>${e(LEARNING.bands[event.band] || '')}</td><td>${event.attempt}</td><td>${event.correct ? event.independent ? 'Correct, independent' : 'Correct with help/retry' : 'Try again'}</td><td>${Math.round(event.activeMs / 1000)}s</td></tr>`).join('')}</tbody></table><p>*Approximate cumulative time with the question open and browser focused. Hidden tabs, menus and pauses after 90 seconds without interaction are excluded. Timing does not decide stars or difficulty. Signed-in learning evidence is saved automatically for planning future practice. Older saves have no reconstructed evidence.</p></details>`;
 }
 function showLevels() {
   keys.clear(); touchDirections.clear(); destination = null;
@@ -381,5 +380,3 @@ function applyLibrary(next) {
   book = bookFor(library, playerId, year); restoreWorld(); buildMarkers(); profileSetup(); setMode('opening');
 }
 setupCloud({ apply: applyLibrary, guest: () => readSave().library, activate: value => { cloud = value; }, status: (message, error = false) => { $('save-status').textContent = message; $('save-status').classList.toggle('save-error', error); } });
-
-document.addEventListener('click', event => { if (event.target.closest?.('#download-evidence')) downloadEvidence('cloudkeepers', Object.entries(library.players).map(([profileId, player]) => ({ profileId, nickname: player.name, books: Object.fromEntries(Object.entries(player.books).map(([year, book]) => [year, { evidence: book.evidence, pending: Object.fromEntries(Object.entries(book.levels).filter(([, progress]) => progress.pending).map(([task, progress]) => [task, progress.pending])) }])) }))); });
