@@ -163,7 +163,7 @@ function showLevels() {
     const p = progressFor(book, t.id), status = rescueStatus(p), unlocked = islandAvailable(book, t.id);
     const completeText = status.gold ? '★ Gold · level complete' : `✓ Level complete · Gold ${status.goldProgress}/4 optional`;
     return `<button class="level-tile${p.mastered ? ' mastered' : ''}" data-level="${t.id}" ${unlocked ? '' : 'disabled'}><span class="level-index">ISLAND ${String(i + 1).padStart(2, '0')} · LEVEL ${i + 1}</span><strong>${e(t.name)}</strong><small>${e(levelTitle(t.id, year))}</small><small>Rescue ${e(t.friend)} · ${e(LEARNING.bands[p.band])}</small><div class="mini-track"><span style="width:${p.mastered ? 100 : status.stars / LEARNING.mastery.independent * 100}%"></span></div><span class="tile-status">${!unlocked ? `Complete Island ${i} to unlock` : p.mastered ? completeText : `${status.stars}/6 stars · ${remainingText(status)}`}</span></button>`;
-  }).join('')}</div>${practiceLog()}<div class="level-legend"><span>♡ ${done.size}/12 friends rescued · ${saveFailed ? 'Browser save unavailable' : 'Saved on this device'}</span><button id="change-player" class="text-button">Change player or starting year</button></div>`;
+  }).join('')}</div>${practiceLog()}<div class="level-legend"><span>♡ ${done.size}/12 friends rescued · ${e($('save-status').textContent)}</span><button id="change-player" class="text-button">Change player or starting year</button></div>`;
   $('levels-modal').hidden = false; $('close-levels').onclick = closeLevels;
   $('change-player').onclick = () => { closeLevels(); setMode('opening'); profileSetup(); };
   card.querySelectorAll('[data-level]').forEach(b => b.onclick = () => { const t = islandFor(b.dataset.level); closeLevels(); visitIsland(t, true); });
